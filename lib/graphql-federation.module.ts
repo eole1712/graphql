@@ -1,18 +1,34 @@
-import { DynamicModule, Inject, Module, OnModuleInit, Optional, Provider } from '@nestjs/common';
+import {
+  DynamicModule,
+  Inject,
+  Module,
+  OnModuleInit,
+  Optional,
+  Provider,
+} from '@nestjs/common';
 import { ApolloServer } from 'apollo-server-express';
 import { MetadataScanner } from '@nestjs/core/metadata-scanner';
 import { loadPackage } from '@nestjs/common/utils/load-package.util';
 import { HttpAdapterHost } from '@nestjs/core';
 
 import { GraphQLFederationFactory } from './graphql-federation.factory';
-import { ScalarsExplorerService, DelegatesExplorerService, ResolversExplorerService } from './services';
+import {
+  ScalarsExplorerService,
+  DelegatesExplorerService,
+  ResolversExplorerService,
+} from './services';
 import { GraphQLAstExplorer } from './graphql-ast.explorer';
 import { GraphQLTypesLoader } from './graphql-types.loader';
 import { GraphQLSchemaBuilder } from './graphql-schema-builder';
 import { GRAPHQL_MODULE_ID, GRAPHQL_MODULE_OPTIONS } from './graphql.constants';
-import { GqlModuleAsyncOptions, GqlModuleOptions, GqlOptionsFactory } from './interfaces';
+import {
+  GqlModuleAsyncOptions,
+  GqlModuleOptions,
+  GqlOptionsFactory,
+} from './interfaces';
 import { generateString, extend, mergeDefaults } from './utils';
 import { GraphQLFactory } from './graphql.factory';
+import { writeFileSync } from 'fs';
 
 @Module({
   providers: [
@@ -98,7 +114,8 @@ export class GraphQLFederationModule implements OnModuleInit {
 
     return {
       provide: GRAPHQL_MODULE_OPTIONS,
-      useFactory: (optionsFactory: GqlOptionsFactory) => optionsFactory.createGqlOptions(),
+      useFactory: (optionsFactory: GqlOptionsFactory) =>
+        optionsFactory.createGqlOptions(),
       inject: [options.useExisting || options.useClass],
     };
   }
@@ -109,7 +126,10 @@ export class GraphQLFederationModule implements OnModuleInit {
 
     if (!httpAdapter) return;
 
-    const { printSchema } = loadPackage('@apollo/federation', 'ApolloFederation');
+    const { printSchema } = loadPackage(
+      '@apollo/federation',
+      'ApolloFederation',
+    );
 
     const {
       path,
@@ -121,7 +141,7 @@ export class GraphQLFederationModule implements OnModuleInit {
     } = this.options;
     const app = httpAdapter.getInstance();
 
-    const typeDefs = await this.graphqlTypesLoader.getTypesFromPaths(typePaths);
+    const typeDefs = await this.graphqlTypesLoader.mergeTypesByPaths(typePaths);
 
     const mergedTypeDefs = extend(typeDefs, this.options.typeDefs);
     const apolloOptions = await this.graphqlFederationFactory.mergeOptions({
@@ -133,6 +153,15 @@ export class GraphQLFederationModule implements OnModuleInit {
       await this.graphqlFactory.generateDefinitions(
         printSchema(apolloOptions.schema),
         this.options,
+      );
+    }
+
+    if (this.options.autoSchemaFile) {
+      writeFileSync(
+        this.options.autoSchemaFile as string,
+        printSchema(apolloOptions.schema)
+          .replace('_service: _Service!', '')
+          .replace('_entities(representations: [_Any!]!): [_Entity]!', ''),
       );
     }
 
@@ -148,7 +177,9 @@ export class GraphQLFederationModule implements OnModuleInit {
 
     if (this.options.installSubscriptionHandlers) {
       // TL;DR <https://github.com/apollographql/apollo-server/issues/2776>
-      throw new Error('No support for subscriptions yet when using Apollo Federation');
+      throw new Error(
+        'No support for subscriptions yet when using Apollo Federation',
+      );
       /*this.apolloServer.installSubscriptionHandlers(
         httpAdapter.getHttpServer(),
       );*/

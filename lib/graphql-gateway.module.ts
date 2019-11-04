@@ -1,7 +1,16 @@
-import { DynamicModule, Inject, Module, OnModuleInit, Optional } from '@nestjs/common';
+import {
+  DynamicModule,
+  Inject,
+  Module,
+  OnModuleInit,
+  Optional,
+} from '@nestjs/common';
 import { ApolloServer } from 'apollo-server-express';
 import { HttpAdapterHost } from '@nestjs/core';
-import { GRAPHQL_GATEWAY_BUILD_SERVICE, GRAPHQL_GATEWAY_MODULE_OPTIONS } from './graphql.constants';
+import {
+  GRAPHQL_GATEWAY_BUILD_SERVICE,
+  GRAPHQL_GATEWAY_MODULE_OPTIONS,
+} from './graphql.constants';
 import { GatewayBuildService, GatewayModuleOptions } from './interfaces';
 import { loadPackage } from '@nestjs/common/utils/load-package.util';
 
@@ -12,7 +21,8 @@ export class GraphQLGatewayModule implements OnModuleInit {
   constructor(
     @Optional()
     private readonly httpAdapterHost: HttpAdapterHost,
-    @Optional() @Inject(GRAPHQL_GATEWAY_BUILD_SERVICE)
+    @Optional()
+    @Inject(GRAPHQL_GATEWAY_BUILD_SERVICE)
     private readonly buildService: GatewayBuildService,
     @Inject(GRAPHQL_GATEWAY_MODULE_OPTIONS)
     private readonly options: GatewayModuleOptions,
@@ -43,7 +53,6 @@ export class GraphQLGatewayModule implements OnModuleInit {
       options: {
         __exposeQueryPlanExperimental,
         debug,
-        serviceList,
         path,
         disableHealthCheck,
         onHealthCheck,
@@ -57,7 +66,6 @@ export class GraphQLGatewayModule implements OnModuleInit {
     const gateway = new ApolloGateway({
       __exposeQueryPlanExperimental,
       debug,
-      serviceList,
       buildService,
     });
 
@@ -79,7 +87,9 @@ export class GraphQLGatewayModule implements OnModuleInit {
 
     if (installSubscriptionHandlers) {
       // TL;DR <https://github.com/apollographql/apollo-server/issues/2776>
-      throw new Error('No support for subscriptions yet when using Apollo Federation');
+      throw new Error(
+        'No support for subscriptions yet when using Apollo Federation',
+      );
       /*this.apolloServer.installSubscriptionHandlers(
         httpAdapter.getHttpServer(),
       );*/

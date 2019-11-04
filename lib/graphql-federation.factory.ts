@@ -2,8 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { gql } from 'apollo-server-core';
 import { loadPackage } from '@nestjs/common/utils/load-package.util';
 
-import { extend } from './utils';
-import { ScalarsExplorerService, DelegatesExplorerService, ResolversExplorerService } from './services';
+import { extend, removeTempField } from './utils';
+import {
+  ScalarsExplorerService,
+  DelegatesExplorerService,
+  ResolversExplorerService,
+} from './services';
 import { GqlModuleOptions } from './interfaces';
 
 @Injectable()
@@ -18,8 +22,13 @@ export class GraphQLFederationFactory {
     return resolvers.reduce((prev, curr) => extend(prev, curr), {});
   }
 
-  async mergeOptions(options: GqlModuleOptions = {}): Promise<GqlModuleOptions> {
-    const { buildFederatedSchema } = loadPackage('@apollo/federation', 'ApolloFederation');
+  async mergeOptions(
+    options: GqlModuleOptions = {},
+  ): Promise<GqlModuleOptions> {
+    const { buildFederatedSchema } = loadPackage(
+      '@apollo/federation',
+      'ApolloFederation',
+    );
 
     const resolvers = this.extendResolvers([
       this.resolversExplorerService.explore(),
@@ -29,10 +38,13 @@ export class GraphQLFederationFactory {
 
     const schema = buildFederatedSchema([
       {
-        typeDefs: gql`${options.typeDefs}`,
+        typeDefs: gql`
+          ${options.typeDefs}
+        `,
         resolvers,
-      }
+      },
     ]);
+    removeTempField(schema);
 
     return {
       ...options,

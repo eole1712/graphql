@@ -1,6 +1,6 @@
 {
-  "name": "@nestjs/graphql",
-  "version": "6.2.4",
+  "name": "grishjan-nestjs-graphql-federation",
+  "version": "6.3.11",
   "description": "Nest - modern, fast, powerful node.js web framework (@graphql)",
   "author": "Kamil Mysliwiec",
   "license": "MIT",
@@ -16,16 +16,15 @@
     "test:integration": "jest --config ./tests/jest-e2e.json"
   },
   "devDependencies": {
-    "@nestjs/common": "6.3.1",
-    "@nestjs/core": "6.3.1",
-    "@nestjs/platform-express": "6.3.1",
-    "@nestjs/testing": "6.3.1",
-    "@types/graphql": "^14.2.1",
+    "@nestjs/common": "6.5.3",
+    "@nestjs/core": "6.5.3",
+    "@nestjs/platform-express": "6.5.3",
+    "@nestjs/testing": "6.5.3",
     "@types/jest": "24.0.13",
     "@types/node": "12.0.4",
-    "apollo-server-express": "2.6.1",
+    "apollo-server-express": "2.9.6",
     "class-transformer": "0.2.3",
-    "graphql": "14.3.1",
+    "graphql": "14.5.8",
     "husky": "1.3.1",
     "jest": "24.8.0",
     "lint-staged": "8.1.7",
@@ -39,7 +38,7 @@
   "dependencies": {
     "chokidar": "3.0.1",
     "fast-glob": "2.2.7",
-    "graphql-tools": "4.0.4",
+    "graphql-tools": "4.0.5",
     "lodash": "4.17.11",
     "merge-graphql-schemas": "1.5.8",
     "optional": "0.1.4",
@@ -48,14 +47,14 @@
     "uuid": "3.3.2"
   },
   "peerDependencies": {
-    "@nestjs/core": "^6.2.0",
-    "graphql": "^14.1.1",
-    "reflect-metadata": "^0.1.12"
+    "@nestjs/core": "6.5.3",
+    "graphql": "14.5.8",
+    "reflect-metadata": "0.1.13"
   },
   "optionalDependencies": {
-    "@apollo/federation": "^0.6.4",
-    "@apollo/gateway": "^0.6.7",
-    "type-graphql": "^0.17.3"
+    "@apollo/federation": "0.10.2",
+    "@apollo/gateway": "0.10.7",
+    "type-graphql": "0.17.5"
   },
   "lint-staged": {
     "*.ts": [

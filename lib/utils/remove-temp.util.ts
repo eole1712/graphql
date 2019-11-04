@@ -14,5 +14,12 @@ export function removeTempField(schema: GraphQLSchema): GraphQLSchema {
     return schema;
   }
   delete fields['temp__'];
+  if (fields['_service']) {
+    const resolve = fields['_service'].resolve;
+    fields['_service'].resolve = function(...args) {
+      const result = resolve(...args);
+      return { ...result, sdl: result.sdl.replace('temp__: Boolean', '') };
+    };
+  }
   return schema;
 }
